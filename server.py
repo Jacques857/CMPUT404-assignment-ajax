@@ -74,10 +74,17 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return flask.Response(status=301, headers={"Location" : "http://127.0.0.1/static/index.html"})
+    return flask.Response(status=301, headers={"Location" : "http://localhost:5000/static/index.html", "Access-Control-Allow-Origin" : "*"})
 
-@app.route("/entity/<entity>", methods=['POST','PUT'])
+@app.route("/entity/<entity>", methods=['POST','PUT','OPTIONS'])
 def update(entity):
+    # handle pre-flight request
+    if request.method == 'OPTIONS':
+        response = flask.Response()
+        response.access_control_allow_headers = ["content-type"]
+        response.access_control_allow_origin = "*"
+        return response
+    
     '''update the entities via this interface'''
     # Get the json body
     data = flask_post_json()
@@ -85,24 +92,42 @@ def update(entity):
     # Update the entity
     myWorld.set(entity, data)
     
-    return flask.Response(status=200, content_type="application/json", response=json.dumps(myWorld.get(entity)))
+    return flask.Response(status=200, headers={"Access-Control-Allow-Origin" : "*"}, content_type="application/json", response=json.dumps(myWorld.get(entity)))
 
-@app.route("/world", methods=['POST','GET'])    
+@app.route("/world", methods=['POST','GET','OPTIONS'])    
 def world():
+    # handle pre-flight request
+    if request.method == 'OPTIONS':
+        response = flask.Response()
+        response.access_control_allow_headers = ["content-type"]
+        response.access_control_allow_origin = "*"
+        return response
+
     '''you should probably return the world here'''
-    return flask.Response(status=200, content_type="application/json", response=json.dumps(myWorld.world()))
+    response = flask.Response(status=200, content_type="application/json", response=json.dumps(myWorld.world()))
+    response.access_control_allow_origin = "*"
+    print(response.headers)
+    return response
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    response = flask.Response(status=200, content_type="application/json", response=json.dumps(myWorld.get(entity)))
+    response = flask.Response(status=200, headers={"Access-Control-Allow-Origin" : "*"}, content_type="application/json", response=json.dumps(myWorld.get(entity)))
     return response
 
-@app.route("/clear", methods=['POST','GET'])
+@app.route("/clear", methods=['POST','GET','OPTIONS'])
 def clear():
+    # handle pre-flight request
+    if request.method == 'OPTIONS':
+        print("MADE IT TO OPTIONS")
+        response = flask.Response()
+        response.access_control_allow_headers = ["content-type"]
+        response.access_control_allow_origin = "*"
+        return response
+
     '''Clear the world out!'''
     myWorld.clear()
-    return flask.Response(status=200)
+    return flask.Response(status=200, headers={"Access-Control-Allow-Origin" : "*"})
 
 if __name__ == "__main__":
     app.run()
