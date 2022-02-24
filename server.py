@@ -106,7 +106,6 @@ def world():
     '''you should probably return the world here'''
     response = flask.Response(status=200, content_type="application/json", response=json.dumps(myWorld.world()))
     response.access_control_allow_origin = "*"
-    print(response.headers)
     return response
 
 @app.route("/entity/<entity>")    
@@ -119,7 +118,6 @@ def get_entity(entity):
 def clear():
     # handle pre-flight request
     if request.method == 'OPTIONS':
-        print("MADE IT TO OPTIONS")
         response = flask.Response()
         response.access_control_allow_headers = ["content-type"]
         response.access_control_allow_origin = "*"
@@ -127,7 +125,7 @@ def clear():
 
     '''Clear the world out!'''
     myWorld.clear()
-    return flask.Response(status=200, headers={"Access-Control-Allow-Origin" : "*"})
+    return flask.Response(status=200, headers={"Access-Control-Allow-Origin" : "*"}, content_type="application/json", response=json.dumps(myWorld.world()))
 
 if __name__ == "__main__":
     app.run()
