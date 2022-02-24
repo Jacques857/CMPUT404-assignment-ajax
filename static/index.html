@@ -85,10 +85,10 @@ function drawCircle(context,entity) {
             denominators = [2,4]
         } else if (entity["type"] == 1){
             denominators = [4,2]
-        } else if (entity["type"] == 1){
+        } else if (entity["type"] == 2){
             denominators = [2,2]
         } else {
-            denominators = [2,4]
+            denominators = [4,4]
         }
         horizontalDenominator = denominators[0]
         verticalDenominator = denominators[1]
@@ -107,7 +107,7 @@ function drawCircle(context,entity) {
 
 function prepEntity(entity) {
     if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+        entity["colour"] = "Purple";
     }
     if (!entity["radius"]) {
         entity["radius"] = 70;
@@ -282,7 +282,7 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'white', 'type':2});
+    addEntityWithoutName({'x':x,'y':y,'colour':'white', 'type':0});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
